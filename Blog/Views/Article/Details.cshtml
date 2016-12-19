@@ -1,0 +1,74 @@
+﻿@model Blog.Models.Article
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="container">
+    <article>
+        <header>
+            <h2>
+                @Model.Title
+            </h2>
+        </header>
+        <p>
+            @Model.Content
+        </p>
+        <small class="author">
+            --author @Model.Author.FullName
+        </small>
+
+        <div class="pull-left">
+            @foreach (var tag in Model.Tags)
+            {
+                <span>@Html.ActionLink(tag.Name, "ListArticlesByTag", "Tag", new { @id = tag.Id }, new { @class = "btn btn-default btn-xs" })</span>
+            }
+        </div>
+
+            <footer class="pull-right">
+                @if (User.IsInRole("Admin") || Model.IsAuthor(User.Identity.Name))
+                {
+                    @Html.ActionLink("Edit", "Edit", "Article", new { @id = Model.Id }, new { @class = "btn btn-success btn-xs" })
+                    @Html.ActionLink("Delete", "Delete", "Article", new { @id = Model.Id }, new { @class = "btn btn-danger btn-xs" })
+                }
+                
+                @Html.ActionLink("Back", "Index", "Article", null, new { @class = "btn btn-default btn-xs" })
+            </footer>
+</article>
+</div>
+
+
+
+<article>
+    <div class="container">
+        <h2>Comments:</h2>
+        @Html.ActionLink("Create", "Create", "Comment", new { @id = Model.Id}, null)
+    </div>
+</article>
+
+<div>
+    <article>
+        <div class="container">
+            <div class="well">
+                @foreach (var comment in Model.Comments)
+            {
+                if (comment.ArticleId == Model.Id)
+                {
+                     <p>@comment.Content</p>
+
+                    <footer class="pull-right">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            @Html.ActionLink("Delete", "Delete", "Comment", new { @id = comment.Id }, new { @class = "btn btn-danger btn-xs" })
+                        }
+                    </footer>
+                    }
+                }
+            </div>
+        </div>
+        
+    </article>
+</div>
+<hr />
+
+
